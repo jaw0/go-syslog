@@ -397,20 +397,20 @@ func WithRetryDelay(dur time.Duration) optFunc {
 	}
 }
 
-// Debug send a message at Debug severity
-func (l *L) Debug(m Message) error { return l.Send(SevDebug, m) }
+// Debug sends a message at Debug severity
+func (l *L) Debug(txt string) error { return l.Send(SevDebug, TextMessage(txt)) }
 
-// Emerg send a message at Emerg severity
-func (l *L) Emerg(m Message) error { return l.Send(SevEmerg, m) }
+// Emerg sends a message at Emerg severity
+func (l *L) Emerg(txt string) error { return l.Send(SevEmerg, TextMessage(txt)) }
 
-// Err send a message at Err severity
-func (l *L) Err(m Message) error { return l.Send(SevErr, m) }
+// Err sends a message at Err severity
+func (l *L) Err(txt string) error { return l.Send(SevErr, TextMessage(txt)) }
 
-// Info send a message at Info severity
-func (l *L) Info(m Message) error { return l.Send(SevInfo, m) }
+// Info sends a message at Info severity
+func (l *L) Info(txt string) error { return l.Send(SevInfo, TextMessage(txt)) }
 
-// Notice send a message at Notice severity
-func (l *L) Notice(m Message) error { return l.Send(SevNotice, m) }
+// Notice sends a message at Notice severity
+func (l *L) Notice(txt string) error { return l.Send(SevNotice, TextMessage(txt)) }
 
-// Warning send a message at Warning severity
-func (l *L) Warning(m Message) error { return l.Send(SevWarning, m) }
+// Warning sends a message at Warning severity
+func (l *L) Warning(txt string) error { return l.Send(SevWarning, TextMessage(txt)) }
