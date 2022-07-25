@@ -67,10 +67,10 @@ type Message struct {
 	SData   []*Structured `json:"structured"`
 }
 
-type optFunc func(*L) error
+type OptFunc func(*L) error
 
 // New creates a new syslog
-func New(optfn ...optFunc) (*L, error) {
+func New(optfn ...OptFunc) (*L, error) {
 
 	l := &L{
 		proto:    "unix",
@@ -259,7 +259,7 @@ func TextMessage(txt string) Message {
 
 // WithDst specifies a destination to send syslog messages
 // proto should be a supported syslog protocol: usp, tcp, tls, unix
-func WithDst(proto, addr string) optFunc {
+func WithDst(proto, addr string) OptFunc {
 	return func(l *L) error {
 
 		switch proto {
@@ -297,7 +297,7 @@ func WithDst(proto, addr string) optFunc {
 }
 
 // WithConnect will attempt to establish a connection at init
-func WithConnect() optFunc {
+func WithConnect() OptFunc {
 	return func(l *L) error {
 		l.withConnect = true
 		return nil
@@ -306,7 +306,7 @@ func WithConnect() optFunc {
 
 // WithLegacyFormat causes legacy format (rfc 3164) essages to be sent
 // not all features are supported using the legacy format
-func WithLegacyFormat() optFunc {
+func WithLegacyFormat() OptFunc {
 	return func(l *L) error {
 		l.legacy = true
 		return nil
@@ -314,7 +314,7 @@ func WithLegacyFormat() optFunc {
 }
 
 // WithTimeout specifies a timeout used while sending
-func WithTimeout(dur time.Duration) optFunc {
+func WithTimeout(dur time.Duration) OptFunc {
 	return func(l *L) error {
 		l.timeout = dur
 		return nil
@@ -323,7 +323,7 @@ func WithTimeout(dur time.Duration) optFunc {
 
 // WithHostname specifies the local system name
 // typically, the value returned by os.Hostname() should be used
-func WithHostname(name string) optFunc {
+func WithHostname(name string) OptFunc {
 	return func(l *L) error {
 		if name != "" {
 			l.hostname = name
@@ -334,7 +334,7 @@ func WithHostname(name string) optFunc {
 
 // WithAppName specifies the name of the program
 // typically, the value of os.Args(0) should be used
-func WithAppName(name string) optFunc {
+func WithAppName(name string) OptFunc {
 	return func(l *L) error {
 		if name != "" {
 			l.appName = name
@@ -344,7 +344,7 @@ func WithAppName(name string) optFunc {
 }
 
 // WithProcessId specifies the process id
-func WithProcessId(id string) optFunc {
+func WithProcessId(id string) OptFunc {
 	return func(l *L) error {
 		if id != "" {
 			l.procId = id
@@ -354,7 +354,7 @@ func WithProcessId(id string) optFunc {
 }
 
 // WithFacility specifies the syslog facility to use
-func WithFacility(fac Priority) optFunc {
+func WithFacility(fac Priority) OptFunc {
 	return func(l *L) error {
 		l.facility = fac
 		return nil
@@ -362,7 +362,7 @@ func WithFacility(fac Priority) optFunc {
 }
 
 // WithFacilityName specifies the name of the syslog facility to use
-func WithFacilityName(fac string) optFunc {
+func WithFacilityName(fac string) OptFunc {
 	return func(l *L) error {
 		f, err := Facility(fac)
 		if err != nil {
@@ -374,7 +374,7 @@ func WithFacilityName(fac string) optFunc {
 }
 
 // WithTLSConfig specifies a *tls.Config to use when sending over TLS
-func WithTLSConfig(cf *tls.Config) optFunc {
+func WithTLSConfig(cf *tls.Config) OptFunc {
 	return func(l *L) error {
 		l.tlsConf = cf
 		return nil
@@ -382,7 +382,7 @@ func WithTLSConfig(cf *tls.Config) optFunc {
 }
 
 // WithDialer specifies a *net.Dialer to use when making network connections
-func WithDialer(d *net.Dialer) optFunc {
+func WithDialer(d *net.Dialer) OptFunc {
 	return func(l *L) error {
 		l.dialer = d
 		return nil
@@ -390,7 +390,7 @@ func WithDialer(d *net.Dialer) optFunc {
 }
 
 // WithRetryDelay specifies a delay to wait when retrying
-func WithRetryDelay(dur time.Duration) optFunc {
+func WithRetryDelay(dur time.Duration) OptFunc {
 	return func(l *L) error {
 		l.retryDelay = dur
 		return nil
