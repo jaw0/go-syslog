@@ -1,5 +1,5 @@
 
-* go syslog module
+* go syslog client module
 
 - supports udp, tcp, unix, and tls
 - supports RFC 5246 structured data
