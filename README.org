@@ -1,9 +1,10 @@
 
 * go syslog module
 
-** supports udp, tcp, unix, and tls
+- supports udp, tcp, unix, and tls
+- supports RFC 5246 structured data
 
-** supports RFC 5246 structured data
+- https://pkg.go.dev/github.com/jaw0/go-syslog
 
 * Example
 #+begin_src go
