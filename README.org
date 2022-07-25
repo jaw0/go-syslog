@@ -1,0 +1,32 @@
+
+* go syslog module
+
+** supports udp, tcp, unix, and tls
+
+** supports RFC 5246 structured data
+
+* Example
+#+begin_src go
+import "github.com/jaw0/go-syslog"
+
+  slog, err := syslog.New(
+    WithDst("tls", "loghost.example.com:1234"),
+    WithFacilityName("uucp"),
+    WithAppName("programd"))
+
+  if err != nil { ... }
+
+  err := slog.Debug("stuff happened")
+
+  err := slog.Send(syslog.SevInfo, syslog.Message{
+        Message: "stuff happened",
+	SData: []*syslog.Structured{ {
+	    Name:       "wibbley",
+	    Enterprise: "32473",
+	    Param: map[string]string{
+	    	"phrase": "Frumious Bandersnatch",
+	    },
+        },
+  }})
+
+#+end_src
