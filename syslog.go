@@ -93,7 +93,7 @@ func New(optfn ...OptFunc) (*L, error) {
 	}
 
 	if l.withConnect {
-		err := l.connect()
+		_, err := l.connect()
 		if err != nil {
 			return nil, err
 		}
@@ -113,9 +113,13 @@ func (l *L) Close() {
 	}
 }
 
-func (l *L) connect() error {
+func (l *L) connect() (io.WriteCloser, error) {
 	l.lock.Lock()
 	defer l.lock.Unlock()
+
+	if l.conn != nil {
+		return l.conn, nil
+	}
 
 	var err error
 	var conn io.WriteCloser
@@ -132,11 +136,11 @@ func (l *L) connect() error {
 	}
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	l.conn = conn
-	return nil
+	return conn, nil
 }
 
 // Send sends a syslog message
@@ -150,21 +154,22 @@ func (l *L) Send(sev Priority, m Message) error {
 
 	// try + retry
 	for i := 0; i < 3; i++ {
-		err = l.connect()
+		var conn io.WriteCloser
+		conn, err = l.connect()
 		if err != nil {
 			time.Sleep(10 * time.Millisecond)
 			continue
 		}
 
-		if nc, ok := l.conn.(net.Conn); ok {
+		if nc, ok := conn.(net.Conn); ok {
 			if l.timeout != 0 {
 				nc.SetDeadline(time.Now().Add(l.timeout))
 			}
 		}
 
-		_, err = l.conn.Write([]byte(pkt))
+		_, err = conn.Write([]byte(pkt))
 		if err != nil {
-			l.conn.Close()
+			l.Close()
 			time.Sleep(10 * time.Millisecond)
 			continue
 		}
